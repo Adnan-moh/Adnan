@@ -1,0 +1,63 @@
+#include <stdio.h>
+
+#define LIMIT 100
+#define BUF 1000
+
+typedef struct {
+    char items[LIMIT][BUF];
+    int count;
+} TextStack;
+
+/* stack setup */
+void reset(TextStack *st) {
+    st->count = 0;
+}
+
+int empty(TextStack *st) {
+    return st->count == 0;
+}
+
+int full(TextStack *st) {
+    return st->count == LIMIT;
+}
+
+/* push */
+void store(TextStack *st, const char *text) {
+    if (full(st)) return;
+
+    int i = 0;
+    while (text[i] != '\0') {
+        st->items[st->count][i] = text[i];
+        i++;
+    }
+    st->items[st->count][i] = '\0';
+    st->count++;
+}
+
+/* pop */
+void retrieve(TextStack *st, char *text) {
+    if (empty(st)) return;
+
+    st->count--;
+    int i = 0;
+    while (st->items[st->count][i] != '\0') {
+        text[i] = st->items[st->count][i];
+        i++;
+    }
+    text[i] = '\0';
+}
+
+int main() {
+    TextStack undo, redo;
+    char buffer[BUF] = "";
+    char input[BUF];
+    int option;
+
+    reset(&undo);
+    reset(&redo);
+
+    while (1) {
+        printf("\n--- TEXT EDITOR ---\n");
+        printf("1. Insert Text\n");
+        printf("2. Undo\n");
+        printf("3. Redo\n");
